@@ -37,9 +37,9 @@ public class RabbitMqConfig {
         connectionFactory.setPort(port);
         connectionFactory.setUsername(user);
         connectionFactory.setPassword(password);
-//        connectionFactory.setVirtualHost("/");
-//        connectionFactory.setPublisherConfirms(true);
-//        connectionFactory.setPublisherReturns(true);
+        connectionFactory.setVirtualHost("/");
+        connectionFactory.setPublisherConfirms(true);
+        connectionFactory.setPublisherReturns(true);
 
         return connectionFactory;
     }
@@ -55,9 +55,9 @@ public class RabbitMqConfig {
         connectionFactory.setPort(port);
         connectionFactory.setUsername(user);
         connectionFactory.setPassword(password);
-//        connectionFactory.setVirtualHost("/");
-//        connectionFactory.setPublisherConfirms(true);
-//        connectionFactory.setPublisherReturns(true);
+        connectionFactory.setVirtualHost("/");
+        connectionFactory.setPublisherConfirms(true);
+        connectionFactory.setPublisherReturns(true);
 
         return connectionFactory;
     }
