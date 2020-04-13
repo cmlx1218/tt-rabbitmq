@@ -1,0 +1,21 @@
+server:
+  port: 5672
+
+spring:
+  application:
+    name: rabbitmq-spring-boot
+
+  rabbitmq:
+    chengdu:
+      host: 39.96.178.201
+      port: 5672
+      username: user
+      password: password
+
+    guangzhou:
+      host: 101.37.12.126
+      port: 5672
+      username: user
+      password: password
+
+
