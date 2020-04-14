@@ -20,13 +20,13 @@ public class TestSenderController {
 
     @RequestMapping("/testMqSender")
     public void testMqSender() {
-        mqSender.send("chengdu.topic", "chengdu-queue", "政审是傻逼");
+        mqSender.send("chengdu.topic", "chengdu.queue", "政审是傻逼");
         return;
     }
 
     @RequestMapping("/guangzhouMqSender")
     public void guangzhouMqSender() {
-        mqSender.sendGuangzhou("chengdu.topic", "chengdu-queue", "广州人ss");
+        mqSender.sendGuangzhou("guangzhou.topic", "guangzhou.queue", "广州人ss");
         return;
     }
 

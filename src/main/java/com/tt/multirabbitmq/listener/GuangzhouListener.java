@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class GuangzhouListener {
 
     @RabbitHandler
-    @RabbitListener(queues = "guangzhou-queue",containerFactory = "guangzhouContainerFactory")
+    @RabbitListener(queues = "guangzhou.queue",containerFactory = "guangzhouContainerFactory")
     public void chengduSender(@Payload String body) {
         System.out.println(body);
     }

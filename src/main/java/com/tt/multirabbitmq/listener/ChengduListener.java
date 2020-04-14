@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class ChengduListener {
 
     @RabbitHandler
-    @RabbitListener(queues = "chengdu-queue",containerFactory = "chengduContainerFactory")
+    @RabbitListener(queues = "chengdu.queue",containerFactory = "chengduContainerFactory")
     public void chengduSender(@Payload String body) {
         System.out.println(body);
     }

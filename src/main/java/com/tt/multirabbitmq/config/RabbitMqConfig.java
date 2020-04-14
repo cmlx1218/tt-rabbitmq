@@ -7,6 +7,7 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,7 @@ public class RabbitMqConfig {
         return connectionFactory;
     }
 
+
     @Bean(name = "guangzhouConnectionFactory")
     public ConnectionFactory guangzhouConnectionFactory(@Value("${spring.rabbitmq.guangzhou.host}") String host,
                                                       @Value("${spring.rabbitmq.guangzhou.port}") int port,
@@ -71,6 +73,7 @@ public class RabbitMqConfig {
     }
 
     // 声明广州开发服务器rabbitTemplate
+
     @Bean(name = "guangzhouRabbitTemplate")
     public RabbitTemplate guangzhouRabbitTemplate(@Qualifier("guangzhouConnectionFactory") ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
@@ -109,38 +112,65 @@ public class RabbitMqConfig {
         return containerFactory;
     }
 
-    // chengdu
-    @Bean
-    public TopicExchange basicExchange(){
-        return new TopicExchange("chengdu.topic",true,false);
-    }
-
-    @Bean(name = "basicQueue")
-    public Queue basicQueue(){
-        return new Queue("chengdu-queue",false,true,true);
-    }
-
-    @Bean
-    public Binding basicBinding(){
-        return BindingBuilder.bind(basicQueue()).to(basicExchange()).with("chengdu-queue");
+    @Bean(name = "chengduRabitAdmin")
+    public RabbitAdmin chengduRabitAdmin(@Qualifier("chengduConnectionFactory") ConnectionFactory connectionFactory){
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
+        Queue queue = new Queue("chengdu.queue",false,true,true);
+        TopicExchange topicExchange = new TopicExchange("chengdu.topic",true,false);
+        Binding binding = BindingBuilder.bind(queue).to(topicExchange).with("chengdu.*");
+        rabbitAdmin.declareExchange(topicExchange);
+        rabbitAdmin.declareQueue(queue);
+        rabbitAdmin.declareBinding(binding);
+        return rabbitAdmin;
     }
 
 
-    //guangzhou
-    @Bean
-    public TopicExchange guangzhouExchange(){
-        return new TopicExchange("guangzhou.topic",true,false);
+    // 多ip 的 RabbitMQ需要在代码里面创建交换机和队列，不然会创建到我们加了@Primary注解的地址上去
+    // 且持久化的顺序为 exchange、queue、binding
+    @Bean(name = "guangzhouRabitAdmin")
+    public RabbitAdmin guangzhouRabitAdmin(@Qualifier("guangzhouConnectionFactory") ConnectionFactory connectionFactory){
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
+        Queue queue = new Queue("guangzhou.queue",false,true,true);
+        TopicExchange topicExchange = new TopicExchange("guangzhou.topic",true,false);
+        Binding binding = BindingBuilder.bind(queue).to(topicExchange).with("guangzhou.*");
+        rabbitAdmin.declareExchange(topicExchange);
+        rabbitAdmin.declareQueue(queue);
+        rabbitAdmin.declareBinding(binding);
+        return rabbitAdmin;
     }
 
-    @Bean(name = "guangzhouQueue")
-    public Queue guangzhouQueue(){
-        return new Queue("guangzhou-queue",false,true,true);
-    }
-
-    @Bean
-    public Binding guangzhouBinding(){
-        return BindingBuilder.bind(guangzhouQueue()).to(guangzhouExchange()).with("guangzhou-queue");
-    }
+//    // chengdu
+//    @Bean
+//    public TopicExchange basicExchange(){
+//        return new TopicExchange("chengdu.topic",true,false);
+//    }
+//
+//    @Bean(name = "basicQueue")
+//    public Queue basicQueue(){
+//        return new Queue("chengdu-queue",false,true,true);
+//    }
+//
+//    @Bean
+//    public Binding basicBinding(){
+//        return BindingBuilder.bind(basicQueue()).to(basicExchange()).with("chengdu-queue");
+//    }
+//
+//
+//    //guangzhou
+//    @Bean(name = "guangzhouExchange")
+//    public TopicExchange guangzhouExchange(){
+//        return new TopicExchange("guangzhou.topic",true,false);
+//    }
+//
+//    @Bean(name = "guangzhouQueue")
+//    public Queue guangzhouQueue(){
+//        return new Queue("guangzhou-queue",false,true,true);
+//    }
+//
+//    @Bean
+//    public Binding guangzhouBinding(){
+//        return BindingBuilder.bind(guangzhouQueue()).to(guangzhouExchange()).with("guangzhou-queue");
+//    }
 
 
 }
